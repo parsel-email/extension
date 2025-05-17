@@ -1,24 +1,32 @@
+import "./style.css"
 import { useState } from "react"
+
 
 function IndexPopup() {
   const [data, setData] = useState("")
 
   return (
-    <div className="flex flex-col p-4">
-      <h1 className="text-lg font-bold mb-4">
+    <div className="flex flex-col p-4 space-y-4 w-96 max-w-full min-h-[300px]">
+      <h1 className="text-lg font-bold">
         Welcome to your{" "}
-        <a href="https://www.plasmo.com" className="text-blue-600 underline hover:text-blue-800">
+        <a
+          href="https://www.plasmo.com"
+          className="link link-primary"
+        >
           Parsel
         </a>{" "}
         Extension!
       </h1>
+      <button className="btn btn-primary w-fit self-start">
+        DaisyUI Button
+      </button>
       <input
-        className="border border-gray-300 rounded px-2 py-1 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="input input-bordered w-full"
         onChange={(e) => setData(e.target.value)}
         value={data}
         placeholder="Type something..."
       />
-      <footer className="text-xs text-gray-500">Crafted by @PlasmoHQ</footer>
+      <footer className="text-xs text-base-content/50">Crafted by @PlasmoHQ</footer>
     </div>
   )
 }
