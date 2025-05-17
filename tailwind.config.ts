@@ -5,7 +5,9 @@ import daisyui from 'daisyui';
 import type { Config } from 'tailwindcss';
 
 export default {
-  content: ['./src/**/*.{html,js,ts}'],
+  content: ['./src/**/*.{js,jsx,ts,tsx,html}'],
+  mode: "jit",
+  darkMode: "class",
 
   daisyui: {
     themes: [
