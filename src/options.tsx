@@ -1,5 +1,5 @@
 import type { Provider, User } from "@supabase/supabase-js"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 import { sendToBackground } from "@plasmohq/messaging"
 import { Storage } from "@plasmohq/storage"
