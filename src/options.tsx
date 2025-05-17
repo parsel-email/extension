@@ -7,6 +7,8 @@ import { useStorage } from "@plasmohq/storage/hook"
 
 import { supabase } from "./supabase"
 
+import "./style.css"
+
 function IndexOptions() {
   const [user, setUser] = useStorage<User>({
     key: "user",
@@ -49,29 +51,16 @@ function IndexOptions() {
   }
 
   return (
-    <main
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100%",
-        top: 240,
-        position: "relative"
-      }}>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: 240,
-          justifyContent: "space-between",
-          gap: 4.2
-        }}>
+    <main className="flex justify-center items-center w-full min-h-screen bg-base-200">
+      <div className="flex flex-col w-80 gap-4 p-6 rounded-xl shadow-lg bg-base-100 border border-base-300">
         {user && (
           <>
-            <h3>
-              {user.email} - {user.id}
+            <h3 className="text-lg font-semibold mb-2 flex flex-col">
+              <span className="truncate">{user.email}</span>
+              <span className="text-xs text-base-content/60">{user.id}</span>
             </h3>
             <button
+              className="btn btn-error btn-outline"
               onClick={() => {
                 supabase.auth.signOut()
                 setUser(null)
@@ -83,7 +72,8 @@ function IndexOptions() {
         {!user && (
           <>
             <button
-              onClick={(e) => {
+              className="btn btn-primary"
+              onClick={() => {
                 handleOAuthLogin("google")
               }}>
               Sign in with Google
