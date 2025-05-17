@@ -1,2 +1,5 @@
 export {}
-console.log("HELLO WORLD FROM BGSCRIPTS")
+
+chrome.action.onClicked.addListener(() => {
+  chrome.runtime.openOptionsPage()
+})

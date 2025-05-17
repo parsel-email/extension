@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
-import { SecureStorage } from "@plasmohq/storage/secure";
+import { Storage } from "@plasmohq/storage";
 
-const storage = new SecureStorage()
+const storage = new Storage()
 
 export const supabase = createClient(
     process.env.PLASMO_PUBLIC_SUPABASE_URL,
