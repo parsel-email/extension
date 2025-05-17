@@ -9,6 +9,8 @@ import { supabase } from "./supabase"
 
 import "./style.css"
 
+const CRX_REDIRECT_URL = `chrome-extension://${process.env.PLASMO_PUBLIC_CRX_ID}/options.html`
+
 function IndexOptions() {
   const [user, setUser] = useStorage<User>({
     key: "user",
@@ -45,7 +47,7 @@ function IndexOptions() {
       provider,
       options: {
         scopes,
-        redirectTo: location.href
+        redirectTo: CRX_REDIRECT_URL
       }
     })
   }
@@ -61,8 +63,10 @@ function IndexOptions() {
             </h3>
             <button
               className="btn btn-error btn-outline"
-              onClick={() => {
-                supabase.auth.signOut()
+              onClick={async () => {
+                await supabase.auth.signOut()
+                await supabase.auth.getUser() // force refresh
+                await supabase.auth.getSession() // force refresh
                 setUser(null)
               }}>
               Logout
@@ -74,6 +78,7 @@ function IndexOptions() {
             <button
               className="btn btn-primary"
               onClick={() => {
+                console.log(CRX_REDIRECT_URL)
                 handleOAuthLogin("google")
               }}>
               Sign in with Google

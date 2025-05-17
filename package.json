@@ -37,7 +37,7 @@
     "host_permissions": [
       "https://*/*"
     ],
-    "key": "$CRX_KEY",
+    "key": "$PLASMO_PUBLIC_CRX_KEY",
     "web_accessible_resources": [
       {
         "resources": [
@@ -47,7 +47,7 @@
           "<all_urls>"
         ],
         "extension_ids": [
-          "$CRX_ID"
+          "$PLASMO_PUBLIC_CRX_ID"
         ]
       }
     ]
