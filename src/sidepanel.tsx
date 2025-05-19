@@ -1,4 +1,4 @@
-import type { Provider, User } from "@supabase/supabase-js"
+import type { User } from "@supabase/supabase-js" // Provider removed
 import { useEffect } from "react"
 
 import { sendToBackground } from "@plasmohq/messaging"
@@ -8,10 +8,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { supabase } from "./supabase"
 import "./style.css"
 
-// Ensure this redirect URL points to options.html
-const CRX_REDIRECT_URL = `chrome-extension://${process.env.PLASMO_PUBLIC_CRX_ID}/options.html`
-
-function IndexOptions() {
+function SidePanel() {
   const [user, setUser] = useStorage<User>({
     key: "user",
     instance: new Storage({
@@ -27,7 +24,7 @@ function IndexOptions() {
         console.error(error)
         return
       }
-      if (data.session) {
+      if (!!data.session) {
         setUser(data.session.user)
         sendToBackground({
           name: "init-session",
@@ -36,13 +33,12 @@ function IndexOptions() {
             access_token: data.session.access_token
           }
         } as any)
-      } else {
-        setUser(null)
       }
     }
 
     init()
 
+    // Listen for auth changes to update the UI
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === "SIGNED_IN" && session) {
@@ -56,6 +52,8 @@ function IndexOptions() {
           } as any)
         } else if (event === "SIGNED_OUT") {
           setUser(null)
+          // Optionally, tell background session ended if needed
+          // sendToBackground({ name: "session-ended" } as any)
         }
       }
     )
@@ -65,52 +63,46 @@ function IndexOptions() {
     }
   }, [])
 
-  const handleOAuthLogin = async (provider: Provider, scopes = "email") => {
-    await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        scopes,
-        redirectTo: CRX_REDIRECT_URL
-      }
-    })
-  }
+  // handleOAuthLogin removed from here
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    // setUser(null) will be handled by onAuthStateChange
+  const openOptionsPage = () => {
+    chrome.runtime.openOptionsPage()
   }
 
   return (
-    <main className="flex justify-center items-center w-full min-h-screen bg-base-200">
-      <div className="flex flex-col w-80 gap-4 p-6 rounded-xl shadow-lg bg-base-100 border border-base-300">
-        <h1 className="text-3xl font-bold text-center">Parsel Options</h1>
+    <div className="flex flex-col p-4 space-y-4 w-96 max-w-full min-h-screen bg-base-200">
+      <h1 className="text-4xl font-bold">Parsel</h1>
+      <div className="flex flex-col w-full gap-4 p-6 rounded-xl shadow-lg bg-base-100 border border-base-300">
         {user && (
           <>
             <h3 className="text-lg font-semibold mb-2 flex flex-col">
+              <span>Logged in as:</span>
               <span className="truncate">{user.email}</span>
               <span className="text-xs text-base-content/60">{user.id}</span>
             </h3>
-            <button className="btn btn-error btn-outline" onClick={handleLogout}>
-              Logout
+            <p className="text-sm text-base-content/80">
+              To logout, please go to the extension's options page.
+            </p>
+            <button className="btn btn-secondary" onClick={openOptionsPage}>
+              Open Options
             </button>
           </>
         )}
         {!user && (
           <>
-            <p className="text-center">Please sign in to use the extension.</p>
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                handleOAuthLogin("google")
-              }}>
-              Sign in with Google
+            <p className="text-lg font-semibold mb-2">You are not logged in.</p>
+            <p className="text-sm text-base-content/80 mb-4">
+              Please log in via the extension's options page to use Parsel.
+            </p>
+            <button className="btn btn-primary" onClick={openOptionsPage}>
+              Login via Options Page
             </button>
-            {/* You can add other OAuth providers here if needed */}
           </>
         )}
       </div>
-    </main>
+      {/* Add other side panel content here */}
+    </div>
   )
 }
 
-export default IndexOptions
+export default SidePanel

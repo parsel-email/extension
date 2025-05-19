@@ -38,6 +38,12 @@
       "https://*/*"
     ],
     "key": "$PLASMO_PUBLIC_CRX_KEY",
+    "permissions": [
+      "sidePanel"
+    ],
+    "side_panel": {
+      "default_path": "sidepanel.html"
+    },
     "web_accessible_resources": [
       {
         "resources": [
